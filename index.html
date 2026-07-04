@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя Визитка / My Bio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <img src="photo_2025-09-29_05-36-10.jpg" alt="Avatar" class="avatar">
+
+        <div class="bio">
+            <h1 class="name-switcher">
+                <span id="name-text" class="text-in">VitaOVE</span>
+            </h1>
+
+            <div class="description-container">
+                <div id="desc-ru" class="description active-desc">
+                    <p>Когда ситуация зашла в тупик, упорство превращается в упрямство.</p>
+                    <p>Временный уход — это не проигрыш, а возможность сохранить ресурсы и переосмыслить ситуацию.</p>
+                </div>
+                
+                <div id="desc-en" class="description">
+                    <p>When the situation has reached a dead end, perseverance turns into stubbornness.</p>
+                    <p>Temporary withdrawal is not a loss, but an opportunity to save resources and rethink the approach.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="links">
+            <a href="https://t.me/VitaOVE" target="_blank" class="link-btn Telegram">Telegram</a>
+            <a href="https://steamcommunity.com/profiles/76561199058973904/" target="_blank" class="link-btn GitHub">Steam</a>
+        </div>
+
+        <div class="lang-switcher">
+            <button id="btn-ru" class="active">RU</button>
+            <button id="btn-en">EN</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // --- НАСТРОЙКИ ИМЕНИ ---
+            const names = ["VitaOVE", "Vita", "ACCEVO"];
+            let currentNameIndex = 0;
+            const animSpeed = 500; // время анимации в мс (совпадает с CSS)
+
+            const nameText = document.getElementById('name-text');
+            const btnRu = document.getElementById('btn-ru');
+            const btnEn = document.getElementById('btn-en');
+            const descRu = document.getElementById('desc-ru');
+            const descEn = document.getElementById('desc-en');
+
+            // Универсальная функция плавной смены текста (уход вниз -> появление сверху)
+            function changeTextAnimated(element, newContent, isFlex = false) {
+                element.classList.remove('text-in');
+                element.classList.add('text-out');
+
+                setTimeout(() => {
+                    if (typeof newContent === 'string') {
+                        element.textContent = newContent;
+                    } else if (newContent instanceof HTMLElement) {
+                        // Если передаем скрытый элемент (для смены языка)
+                        element.classList.remove('active-desc');
+                        newContent.classList.add('active-desc');
+                    }
+
+                    element.classList.remove('text-out');
+                    element.classList.add('text-in');
+                }, animSpeed);
+            }
+
+            // Ротация Имени каждые 3 секунды
+            setInterval(() => {
+                currentNameIndex = (currentNameIndex + 1) % names.length;
+                changeTextAnimated(nameText, names[currentNameIndex]);
+            }, 3000);
+
+            // --- ЛОГИКА СМЕНЫ ЯЗЫКА ---
+            function switchLanguage(targetLang) {
+                if (targetLang === 'ru' && !btnRu.classList.contains('active')) {
+                    btnRu.classList.add('active');
+                    btnEn.classList.remove('active');
+                    
+                    // Анимируем уход английского и появление русского
+                    changeTextAnimated(descEn, descRu);
+                } else if (targetLang === 'en' && !btnEn.classList.contains('active')) {
+                    btnEn.classList.add('active');
+                    btnRu.classList.remove('active');
+                    
+                    // Анимируем уход русского и появление английского
+                    changeTextAnimated(descRu, descEn);
+                }
+            }
+
+            // Назначаем клики через JavaScript (безопасный метод)
+            btnRu.addEventListener('click', () => switchLanguage('ru'));
+            btnEn.addEventListener('click', () => switchLanguage('en'));
+        });
+    </script>
+</body>
+</html>
